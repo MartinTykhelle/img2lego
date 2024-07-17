@@ -20,6 +20,11 @@
             .map((x) => x.colorCode)
             .join(",");
     }
+
+    function disableAll(){
+        data.map(x=>x.enabled=false);
+        data = data;
+    }
 </script>
 
 {#each data as color}
@@ -39,6 +44,7 @@
     <input type="hidden" name="colors" value={colors} />
     <input type="submit" />
 </form>
+<button on:click={disableAll}>Disable All</button>
 
 <style>
     .color {
