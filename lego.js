@@ -57,7 +57,7 @@ for (var key in legoColors) {
     let object = legoColors[key];
     object.colorCode = parseInt(key);
     object.enabled = initialAvailableColors.includes(object.colorCode);
-    legoColorsArray.push(object);
+    object.avaiable = initialAvailableColors.includes(object.colorCode);
 }
 
 function rgb2lab(rgb) {
@@ -166,7 +166,7 @@ async function processFile(inputFile, availableColors, callback) {
 
                 info = outputObject.info;
                 outputBuffer = outputObject.data;
-                
+
                 outputData.width = info.width;
                 outputData.height = info.height;
                 for (let index = 0; index < info.width * info.height * info.channels; index += info.channels) {

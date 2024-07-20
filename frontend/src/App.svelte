@@ -14,25 +14,22 @@
             rawResult.json().then(function (json) {
               for (let colorCode in json) {
                 let color = json[colorCode];
-                db.table("legoColors").add({
-                  colorCode: colorCode,
-                  r: color.r,
-                  g: color.g,
-                  b: color.b,
-                  name: color.name,
-                  enabled: color.enabled,
-                });
+                if (color.avaiable) {
+                  db.table("legoColors").add({
+                    colorCode: parseInt(colorCode),
+                    r: color.r,
+                    g: color.g,
+                    b: color.b,
+                    name: color.name,
+                    enabled: color.enabled,
+                  });
+                }
               }
             });
           });
         }
       });
   });
-
-  let legoColors = liveQuery(    
-    () => db.table('legoColors').toArray(),
-  );
-
 </script>
 
 <main>

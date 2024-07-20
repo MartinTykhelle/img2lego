@@ -5,11 +5,14 @@
     import { db } from "./db";
     let colors;
     let image;
+    let files;
     let input;
-    let legoColors = liveQuery(() => db.table("legoColors").toArray());
+    let legoColors = liveQuery(() =>
+        db.table("legoColors").orderBy("colorCode").toArray(),
+    );
 
     function onChange() {
-        const file = input.files[0];
+        const file = files[0];
 
         if (file) {
             const reader = new FileReader();
@@ -23,6 +26,28 @@
                         image: reader.result,
                         colors: colors,
                     }),
+                }).then((response) => {
+                    response.json().then((json) => {
+                        json.filename = file.name;
+
+                        let counts = {};
+                        for (
+                            let index = 0;
+                            index < json.rawBuffer.length;
+                            index++
+                        ) {
+                            let colorCode = json.rawBuffer[index];
+                            counts[colorCode] = counts[colorCode] ?? 0;
+                            counts[colorCode]++;
+                        }
+                        db.table("legoImage").add({
+                            filename: json.filename,
+                            width: json.width,
+                            height: json.height,
+                            buffer: json.buffer,
+                            colorCounts: counts,
+                        });
+                    });
                 });
             });
             reader.readAsDataURL(file);
@@ -77,7 +102,7 @@
             style="background-color:rgb({color.r},{color.g},{color.b})"
         ></div>
     {/each}
-    <input bind:this={input} on:change={onChange} type="file" />
+    <input bind:files on:change={onChange} type="file" />
     <!--
     <div bind:this={container}>
         {#if showImage}
