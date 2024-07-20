@@ -1,39 +1,43 @@
 <script>
     import { onMount } from "svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
-    let legoColors = [];
+    let legoColors = {};
     let lastUpload = {};
     let counts = {};
     let colors;
 
     function getCounts() {
+        /*
         for (let index = 0; index < lastUpload.rawBuffer.length; index++) {
             let colorCode = lastUpload.rawBuffer[index];
             counts[colorCode] = counts[colorCode] ?? 0;
             counts[colorCode]++;
-        }
+        }*/
     }
 
     function colorCode2rgb(colorCode) {
-        let returnValue = legoColors.filter((x) => x.colorCode == colorCode)[0];
-
+        let returnValue = legoColors[colorCode];
+        if(!returnValue){
+            returnValue = {r:255,g:255,b:255}
+        }
         return `rgb(${returnValue.r},${returnValue.g},${returnValue.b})`;
     }
 
     function colorCode2Name(colorCode) {
-        let returnValue = legoColors.filter((x) => x.colorCode == colorCode)[0];
-
+        let returnValue = legoColors[colorCode];
+        if(!returnValue){
+            returnValue = {name:"White"}
+        }
         return returnValue.name;
     }
     onMount(async function () {
-        legoColors = await (await fetch("/data/legoColors")).json();
         lastUpload = await (await fetch("/data/lastUpload")).json();
+        legoColors = await (await fetch("/data/legoColors")).json();
         getCounts();
-        console.log(counts);
     });
 </script>
 
-{#if Object.keys(lastUpload).length > 0}
+{#if Object.keys(lastUpload).length > 0 && lastUpload.buffer.length > 0}
     <table>
         {#each lastUpload.buffer as row, r}
             <tr>

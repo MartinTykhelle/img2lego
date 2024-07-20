@@ -1,15 +1,14 @@
 
 const express = require('express')
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
 const lego = require('./lego.js')
+const bodyParser = require('body-parser')
 
-const upload = multer({ dest: 'uploads/' })
+
 
 const port = 3000
 const app = express()
 
+app.use(bodyParser.json({ limit: '50mb' }))
 app.use('/', express.static('./frontend/dist'))
 
 let lastUpload = {}
@@ -19,19 +18,25 @@ app.get('/data/legoColors', (req, res) => {
 })
 
 
-app.get('/data/lastUpload', (req, res) => {
-    res.json(lastUpload);
-})
 
-app.post('/upload', upload.single('filename'), function (req, res) {
-    lego.processFile(req.file.path, req.body.colors.split(','), function (data) {
-        lastUpload = data;
-        //todo write lastUpload to file
-        res.redirect('/');
+
+app.post('/data/legoImage', (req, res) => {
+    
+    let parts = req.body.image.split(';');
+    let mimType = parts[0].split(':')[1];
+    let imageData = parts[1].split(',')[1];
+
+    var image = Buffer.from(imageData, 'base64');
+
+    lego.processFile(image, req.body.colors.split(',') ?? "1,26", function (data) {
+        //data.fileName = req.file.originalname
+        req.processedFile = data;
+        res.json(data)
+
     })
 
+})
 
-});
 
 
 app.listen(port, () => {

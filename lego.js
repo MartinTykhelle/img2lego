@@ -158,14 +158,15 @@ async function processFile(inputFile, availableColors, callback) {
     try {
         await sharp(inputFile)
             .sharpen()
-
             .normalise()
             .resize({ width: newWidth, heigh: newHeight })
-
-            //.toFile("output_2.png")
             .raw()
-            .toBuffer(function (err, outputBuffer, info) {
+            .toBuffer({ resolveWithObject: true })
+            .then(function (outputObject) {
 
+                info = outputObject.info;
+                outputBuffer = outputObject.data;
+                
                 outputData.width = info.width;
                 outputData.height = info.height;
                 for (let index = 0; index < info.width * info.height * info.channels; index += info.channels) {
@@ -173,7 +174,6 @@ async function processFile(inputFile, availableColors, callback) {
                     let colorCode = getClosestColor(rgb, availableColors);
                     let legoColor = legoColors[colorCode];
                     outputData.rawBuffer.push(colorCode);
-                    // console.log(getClosestColor(rgb))
 
                     outputBuffer[index] = legoColor.r;
                     outputBuffer[index + 1] = legoColor.g;
@@ -185,18 +185,15 @@ async function processFile(inputFile, availableColors, callback) {
                 }
 
                 callback(outputData)
-                new sharp(outputBuffer, { raw: { width: info.width, height: info.height, channels: info.channels } })
-                    .png()
-                    .toFile("output.png")
             })
 
 
 
     } catch (error) {
-        console.log(`An error occurred during processing: ${error}`);
+        console.error(`An error occurred during processing: ${error}`);
     }
 }
 
 
 exports.processFile = processFile;
-exports.legoColors = legoColorsArray;
+exports.legoColors = legoColors;
