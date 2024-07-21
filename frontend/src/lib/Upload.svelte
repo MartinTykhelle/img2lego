@@ -90,18 +90,21 @@
 </script>
 
 {#if $legoColors}
-    {#each $legoColors as color (color.colorCode)}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div
-            class="color"
-            class:active={color.enabled}
-            on:click={colorClick(color, color.enabled)}
-            use:tooltip={{ content: color.name, position: "top" }}
-            data-color-code={color.colorCode}
-            style="background-color:rgb({color.r},{color.g},{color.b})"
-        ></div>
-    {/each}
+    <button on:click={disableAll}>Disable All</button>
+    <div class="color-container">
+        {#each $legoColors as color (color.colorCode)}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div
+                class="color"
+                class:active={color.enabled}
+                on:click={colorClick(color, color.enabled)}
+                use:tooltip={{ content: color.name, position: "top" }}
+                data-color-code={color.colorCode}
+                style="background-color:rgb({color.r},{color.g},{color.b})"
+            ></div>
+        {/each}
+    </div>
     <input bind:files on:change={onChange} type="file" />
     <!--
     <div bind:this={container}>
@@ -118,10 +121,16 @@
         <input type="submit" />
     </form>
     -->
-    <button on:click={disableAll}>Disable All</button>
 {/if}
 
 <style>
+    .color-container {
+        display: grid;
+        grid-template-columns: repeat(17, 1fr);
+        grid-gap: 5px;
+        margin-left: auto;
+        margin-right: auto;
+    }
     .color {
         display: inline-block;
         width: 32px;

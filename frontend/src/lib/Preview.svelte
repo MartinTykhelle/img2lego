@@ -117,12 +117,14 @@
         margin: 0;
         display: flex;
         justify-content: space-around;
+        min-height: 600px;
     }
     .flex-item {
         padding: 5px;
         width: 25%;
-    }
-    .dot-container {
+        max-height: 600px;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
     .center-item {
         width: 50%;

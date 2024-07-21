@@ -11,7 +11,7 @@ let legoColors = {
     26: { r: 0x00, g: 0x00, b: 0x00, name: "Black" },
     28: { r: 0x00, g: 0x99, b: 0x00, name: "Dark green" },
     37: { r: 0x00, g: 0xcc, b: 0x00, name: "Bright Green" },
-    38: { r: 0xA8, g: 0x3D, b: 0x15, name: "Light bluish violet" },
+    38: { r: 0xA8, g: 0x3D, b: 0x15, name: "Dark Orange" },
     102: { r: 0x47, g: 0x8C, b: 0xC6, name: "Medium blue" },
     106: { r: 0xff, g: 0x66, b: 0x00, name: "Bright orange" },
     107: { r: 0x00, g: 0x8F, b: 0x9B, name: "Bright bluish green" },
@@ -49,7 +49,7 @@ let legoColors = {
     330: { r: 0x77, g: 0x77, b: 0x4E, name: "Olive Green" }
 }
 let initialAvailableColors = [1, 106, 107, 119, 124, 135, 138, 140, 151, 154, 18, 191, 192
-    , 194, 199, 21, 221, 222, 226, 23, 24, 26, 268, 28, /*297,*/ 308, 312, 315, /*316,*/ 322, 323, 326, 330, 37, 38, 5];
+    , 194, 199, 21, 221, 222, 226, 23, 24, 26, 268, 28, /*297,*/ 308, 312, /*315, /*316,*/ 322, 323, 326, 330, 37, 38, 5];
 
 let legoColorsArray = []
 
