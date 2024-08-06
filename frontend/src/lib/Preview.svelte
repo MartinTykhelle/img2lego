@@ -7,9 +7,14 @@
     let counts = {};
     let legoColors = {};
     let activeLegoImage = {};
+    let hightLightColor = 1;
+    let splitEnabled = false;
     let legoImages = liveQuery(() =>
         db.table("legoImage").orderBy("id").toArray(),
     );
+    function toggleSplit() {
+        splitEnabled = !splitEnabled;
+    }
     function colorCode2rgb(colorCode) {
         let returnValue = legoColors[colorCode];
         if (!returnValue) {
@@ -24,6 +29,9 @@
             returnValue = { name: "White" };
         }
         return returnValue.name;
+    }
+    function setHighlightColor(colorCode) {
+        hightLightColor = colorCode;
     }
     function setActive(legoImageId) {
         db.table("legoImage")
@@ -78,15 +86,23 @@
         {#if activeLegoImage && activeLegoImage.buffer && activeLegoImage.buffer.length > 0}
             <table>
                 {#each activeLegoImage.buffer as row, r}
+                    {#if r % 16 == 0 && splitEnabled}
+                        <tr class="seperator"></tr>
+                    {/if}
                     <tr>
                         {#each row as cell, c}
+                            {#if c % 16 == 0 && splitEnabled}
+                                <td class="seperator"></td>
+                            {/if}
                             <td
                                 use:tooltip={{
                                     content: `(${r + 1},${c + 1}) ${colorCode2Name(cell)} [${cell}]`,
                                     position: "top",
                                 }}
                                 ><div
-                                    class="color"
+                                    class="color {hightLightColor == cell
+                                        ? 'highlight'
+                                        : ''}"
                                     style="background-color:{colorCode2rgb(
                                         cell,
                                     )}"
@@ -102,11 +118,14 @@
         {#if activeLegoImage && activeLegoImage.colorCounts}
             <ul>
                 {#each Object.entries(activeLegoImage.colorCounts) as [colorCode, count]}
-                    <li>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+                    <li on:click={() => setHighlightColor(colorCode)}>
                         {colorCode2Name(colorCode)}({colorCode}): {count}
                     </li>
                 {/each}
             </ul>
+            <a on:click={toggleSplit}>Toggle Split</a>
         {/if}
     </div>
 </div>
@@ -126,16 +145,24 @@
         overflow-y: scroll;
         overflow-x: hidden;
     }
+    .seperator {
+        width: 8px;
+        height: 8px;
+    }
     .center-item {
         width: 50%;
     }
 
     .color {
         display: inline-block;
-        width: 8px;
-        height: 8px;
+        width: 12px;
+        height: 12px;
         margin: 0px;
-        border-radius: 8px;
+        border: 1px transparent solid;
+        border-radius: 12px;
+    }
+    .highlight {
+        border: 1px solid red;
     }
     td {
         padding: 0;
