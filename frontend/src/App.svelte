@@ -20,6 +20,7 @@
                     r: color.r,
                     g: color.g,
                     b: color.b,
+                    hue:color.hue,
                     name: color.name,
                     enabled: color.enabled,
                   });
