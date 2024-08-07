@@ -8,7 +8,7 @@
     let files;
     let input;
     let legoColors = liveQuery(() =>
-        db.table("legoColors").orderBy("colorCode").toArray(),
+        db.table("legoColors").orderBy("hue").toArray(),
     );
 
     function onChange() {
